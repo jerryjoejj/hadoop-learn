@@ -5,6 +5,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
+import org.junit.Test;
 
 public class TestHadoop {
 
@@ -21,6 +22,20 @@ public class TestHadoop {
             Path path = fileStatus.getPath();
             System.out.println(path.getName());
         }
+
+    }
+
+    @Test
+    public void uploadFile() throws Exception {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", "hdfs://h7master1:9000");
+
+        // 伪造客户端身份
+        System.setProperty("HADOOP_USER_NAME", "hadoop");
+
+        FileSystem fs = FileSystem.get(conf);
+
+        fs.copyFromLocalFile(new Path("E://1.txt"), new Path("/"));
 
     }
 }
