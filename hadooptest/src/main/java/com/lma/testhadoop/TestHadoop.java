@@ -7,6 +7,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class TestHadoop {
 
     public static void main(String[] args) throws Exception {
@@ -37,5 +39,20 @@ public class TestHadoop {
 
         fs.copyFromLocalFile(new Path("E://1.txt"), new Path("/"));
 
+    }
+
+    @Test
+    public void downloadFile() throws IOException {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", "hdfs://h7master1:9000");
+
+        // 伪造客户端身份
+        System.setProperty("HADOOP_USER_NAME", "hadoop");
+
+        FileSystem fs = FileSystem.get(conf);
+
+//        fs.copyToLocalFile(false, new Path("/1.txt"), new Path("e://"), true);
+        fs.copyToLocalFile(new Path("/1.txt"), new Path("e://"));
+        fs.close();
     }
 }
