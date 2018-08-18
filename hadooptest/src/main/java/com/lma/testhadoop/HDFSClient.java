@@ -1,10 +1,7 @@
 package com.lma.testhadoop;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
-
-import static java.lang.System.in;
 
 public class HDFSClient {
 
@@ -54,6 +48,60 @@ public class HDFSClient {
         FileOutputStream out = new FileOutputStream("d://hello.txt");
 
         IOUtils.copyBytes(in, out, 4096);
+    }
+
+    /**
+     * 展示所有文件
+     */
+    @Test
+    public void testListFiles() throws IOException {
+
+        RemoteIterator<LocatedFileStatus> listFiles = fs.listFiles(new Path("/"), true);
+
+        while (listFiles.hasNext()) {
+            LocatedFileStatus fileStatus = listFiles.next();
+
+            //获取名称
+            System.out.println(fileStatus.getPath().getName());
+            //获取块大小
+            System.out.println(fileStatus.getBlockSize());
+            //获取文件权限
+            System.out.println(fileStatus.getPermission());
+            //获取文件大小
+            System.out.println(fileStatus.getLen());
+
+            BlockLocation[] blockLocations = fileStatus.getBlockLocations();
+            for (BlockLocation location: blockLocations) {
+                System.out.println("block-length: " + location.getLength() + "--" + "block-offset: " + location.getOffset());
+
+                String[] hosts = location.getHosts();
+                for(String host : hosts) {
+                    System.out.println(host);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 展示文件及文件夹
+     * @throws IOException
+     */
+    @Test
+    public void testListAll() throws IOException {
+        FileStatus[] fileStatuses = fs.listStatus(new Path("/"));
+        String flag = "";
+
+        for (FileStatus fileStat : fileStatuses) {
+            if (fileStat.isFile()) {
+                flag = "f--";
+            } {
+                flag = "d--";
+            }
+
+            System.out.println(flag + fileStat.getPath().getName());
+            System.out.println(fileStat.getPermission());
+        }
     }
 
 }
