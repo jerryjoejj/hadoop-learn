@@ -15,8 +15,12 @@ public class WordCountDriver {
     public static void main(String[] args) throws Exception {
         Job job = Job.getInstance(new Configuration());
 
+        //hadoop jar方式运行
         //设置运行的jar位置
-        job.setJar("/home/hadoop/wordcount.jar");
+//        job.setJar("/home/hadoop/wordcount.jar");
+
+        //本地运行
+        job.setJarByClass(WordCountDriver.class);
 
         //设置mapper类
         job.setMapperClass(WordCountMapper.class);
@@ -38,9 +42,14 @@ public class WordCountDriver {
         job.setOutputFormatClass(TextOutputFormat.class);
 
         //设置待处理文件位置
-        FileInputFormat.setInputPaths(job, new Path("/wordcount/input"));
+//        FileInputFormat.setInputPaths(job, new Path("/wordcount/input"));
         //设置处理结果存储文职
-        FileOutputFormat.setOutputPath(job, new Path("/wordcount/output"));
+//        FileOutputFormat.setOutputPath(job, new Path("/wordcount/output"));
+
+        //设置待处理文件位置
+        FileInputFormat.setInputPaths(job, new Path("d:/wordcount/input"));
+        //设置处理结果存储文职
+        FileOutputFormat.setOutputPath(job, new Path("d:/wordcount/output"));
 
         //提交任务，等待处理完毕
         boolean res = job.waitForCompletion(true);
