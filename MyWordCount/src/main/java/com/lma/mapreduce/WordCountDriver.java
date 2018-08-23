@@ -13,7 +13,14 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 public class WordCountDriver {
 
     public static void main(String[] args) throws Exception {
-        Job job = Job.getInstance(new Configuration());
+
+        System.setProperty("HADOOP_USER_NAME", "hadoop");
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", "hdfs://h7master1:9000");
+        conf.set("mapreduce.framework", "yarn");
+        conf.set("yarn.resoucemanager.hostname", "h7master1");
+
+        Job job = Job.getInstance(conf);
 
         //hadoop jar方式运行
         //设置运行的jar位置
@@ -42,14 +49,14 @@ public class WordCountDriver {
         job.setOutputFormatClass(TextOutputFormat.class);
 
         //设置待处理文件位置
-//        FileInputFormat.setInputPaths(job, new Path("/wordcount/input"));
+        FileInputFormat.setInputPaths(job, new Path("/wordcount/input"));
         //设置处理结果存储文职
-//        FileOutputFormat.setOutputPath(job, new Path("/wordcount/output"));
+        FileOutputFormat.setOutputPath(job, new Path("/wordcount/output"));
 
         //设置待处理文件位置
-        FileInputFormat.setInputPaths(job, new Path("d:/wordcount/input"));
+//        FileInputFormat.setInputPaths(job, new Path("d:/wordcount/input"));
         //设置处理结果存储文职
-        FileOutputFormat.setOutputPath(job, new Path("d:/wordcount/output"));
+//        FileOutputFormat.setOutputPath(job, new Path("d:/wordcount/output"));
 
         //提交任务，等待处理完毕
         boolean res = job.waitForCompletion(true);
