@@ -1,12 +1,12 @@
 package com.lma.flow;
 
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class FlowBean implements Writable {
+public class FlowBean implements WritableComparable<FlowBean> {
 
     private Long upFlow;
     private Long downFlow;
@@ -53,11 +53,7 @@ public class FlowBean implements Writable {
 
     @Override
     public String toString() {
-        return "FlowBean{" +
-                "upFlow=" + upFlow +
-                ", downFlow=" + downFlow +
-                ", totalFlow=" + totalFlow +
-                '}';
+        return upFlow + "\t" + downFlow + "\t" + totalFlow;
     }
 
     //序列化
@@ -73,5 +69,9 @@ public class FlowBean implements Writable {
         this.upFlow = dataInput.readLong();
         this.downFlow = dataInput.readLong();
         this.totalFlow = dataInput.readLong();
+    }
+
+    public int compareTo(FlowBean o) {
+        return (int)(o.getTotalFlow() - this.getTotalFlow());
     }
 }
